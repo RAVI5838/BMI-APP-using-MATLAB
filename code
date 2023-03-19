@@ -1,0 +1,128 @@
+classdef App1 < matlab.apps.AppBase
+
+    % Properties that correspond to app components
+    properties (Access = public)
+        UIFigure               matlab.ui.Figure                   % UI Figure
+        LabelNumericEditField  matlab.ui.control.Label            % weight(...
+        NumericEditField       matlab.ui.control.NumericEditField % [-Inf Inf]
+        LabelNumericEditField2 matlab.ui.control.Label            % heighr(...
+        NumericEditField2      matlab.ui.control.NumericEditField % [-Inf Inf]
+        LabelNumericEditField3 matlab.ui.control.Label            % BMI
+        NumericEditField3      matlab.ui.control.NumericEditField % [-Inf Inf]
+        Button                 matlab.ui.control.Button           % calculate
+        LabelEditField         matlab.ui.control.Label            % comment
+        EditField              matlab.ui.control.EditField       
+    end
+
+    methods (Access = private)
+
+        % Code that executes after component creation
+        function startupFcn(app)
+            
+        end
+
+        % Button button pushed function
+        function ButtonButtonPushed(app)
+            weight=app.NumericEditField.Value;
+            height=app.NumericEditField2.Value;
+            c=703*weight/(height*height)
+            app.NumericEditField3.Value=c;
+            if(app.NumericEditField3.Value<18.5)
+                app.EditField.Value='Underweight'
+            else if(app.NumericEditField3.Value>25)
+                app.EditField.Value='Overweight'
+                else if(app.NumericEditField3.Value>18.5 && app.NumericEditField3.Value<25)
+                app.EditField.Value='Normal'
+                end
+            end
+            end
+        end
+    end
+
+    % App initialization and construction
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+
+            % Create UIFigure
+            app.UIFigure = uifigure;
+            app.UIFigure.Position = [100 100 640 480];
+            app.UIFigure.Name = 'UI Figure';
+            setAutoResize(app, app.UIFigure, true)
+
+            % Create LabelNumericEditField
+            app.LabelNumericEditField = uilabel(app.UIFigure);
+            app.LabelNumericEditField.HorizontalAlignment = 'right';
+            app.LabelNumericEditField.Position = [149 388 60 15];
+            app.LabelNumericEditField.Text = 'weight(lbs)';
+
+            % Create NumericEditField
+            app.NumericEditField = uieditfield(app.UIFigure, 'numeric');
+            app.NumericEditField.Position = [224 384 100 22];
+
+            % Create LabelNumericEditField2
+            app.LabelNumericEditField2 = uilabel(app.UIFigure);
+            app.LabelNumericEditField2.HorizontalAlignment = 'right';
+            app.LabelNumericEditField2.Position = [143 329 66 15];
+            app.LabelNumericEditField2.Text = 'heighr(inch)';
+
+            % Create NumericEditField2
+            app.NumericEditField2 = uieditfield(app.UIFigure, 'numeric');
+            app.NumericEditField2.Position = [224 325 100 22];
+
+            % Create LabelNumericEditField3
+            app.LabelNumericEditField3 = uilabel(app.UIFigure);
+            app.LabelNumericEditField3.HorizontalAlignment = 'right';
+            app.LabelNumericEditField3.Position = [188 217 21 15];
+            app.LabelNumericEditField3.Text = 'BMI';
+
+            % Create NumericEditField3
+            app.NumericEditField3 = uieditfield(app.UIFigure, 'numeric');
+            app.NumericEditField3.Position = [224 213 100 22];
+
+            % Create Button
+            app.Button = uibutton(app.UIFigure, 'push');
+            app.Button.ButtonPushedFcn = createCallbackFcn(app, @ButtonButtonPushed);
+            app.Button.Position = [224 271 100 22];
+            app.Button.Text = 'calculate';
+
+            % Create LabelEditField
+            app.LabelEditField = uilabel(app.UIFigure);
+            app.LabelEditField.HorizontalAlignment = 'right';
+            app.LabelEditField.Position = [157 164 50 15];
+            app.LabelEditField.Text = 'comment';
+
+            % Create EditField
+            app.EditField = uieditfield(app.UIFigure, 'text');
+            app.EditField.Position = [222 160 100 22];
+        end
+    end
+
+    methods (Access = public)
+
+        % Construct app
+        function app = App1()
+
+            % Create and configure components
+            createComponents(app)
+
+            % Register the app with App Designer
+            registerApp(app, app.UIFigure)
+
+            % Execute the startup function
+            runStartupFcn(app, @startupFcn)
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.UIFigure)
+        end
+    end
+end
